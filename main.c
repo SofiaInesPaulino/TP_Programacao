@@ -33,6 +33,7 @@ int main() {
             case 3:
                 //guardar informacao em ficheiros
                 guardaParagens(p, totalParagens);
+                guardaLinhas(l);
 
                 //libertar memoria alocada
                 libertarLinhas(l);

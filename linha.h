@@ -40,4 +40,6 @@ plinha removerParagem(char* nome, plinha l, int totalParagens, pparagem p);
 
 void libertarLinhas(plinha l);
 
+void guardaLinhas(plinha l);
+
 #endif //TP_LINHA_H

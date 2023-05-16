@@ -261,3 +261,17 @@ void libertarLinhas(plinha l){
         free(aux);
     }
 }
+
+void guardaLinhas(plinha l){
+    FILE* f;
+    f = fopen("linhas.dat", "wb");
+    if(f == NULL){
+        return;
+    }
+    printf("A guardar linhas em ficheiro\n");
+    while(l != NULL){
+        fwrite(l, sizeof(linha), 1, f);
+        l = l->prox;
+    }
+    fclose(f);
+}
