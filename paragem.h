@@ -30,4 +30,6 @@ pparagem eliminarParagem(pparagem p, int* totalParagens);
 
 int existeParagem(pparagem p, int totalParagens, char* codigo);
 
+void guardaParagens(pparagem p, int totalParagens);
+
 #endif //TP_PARAGEM_H

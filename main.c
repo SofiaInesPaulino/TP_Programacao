@@ -27,6 +27,10 @@ int main() {
                 l = menuLinhas(l, totalParagens, p);
                 break;
             case 3:
+                //guardar informacao em ficheiros
+                guardaParagens(p, totalParagens);
+
+                //libertar memoria alocada
                 libertarLinhas(l);
                 free(p);
                 p = NULL;

@@ -124,3 +124,20 @@ int existeParagem(pparagem p, int totalParagens, char* codigo){
     }
     return 0;
 }
+
+void guardaParagens(pparagem p, int totalParagens){
+    FILE* f;
+    int i;
+
+    f = fopen("paragens.dat", "wb");
+    if(f == NULL){
+        printf("Erro a aceder ao ficheiro!\n");
+        return;
+    }
+    printf("A guardar paragens em ficheiro\n");
+    fwrite(&totalParagens, sizeof(int), 1, f);
+    for(i = 0; i < totalParagens; i++){
+        fwrite((p + i), sizeof(paragem), 1, f);
+    }
+    fclose(f);
+}
