@@ -26,10 +26,11 @@ int main() {
             case 2:
                 l = menuLinhas(l, totalParagens, p);
                 break;
-            /*case 3:
-                ///se tiver linhas registadas dá erro
-                //TODO
-                break;*/
+            case 3:
+                libertarLinhas(l);
+                free(p);
+                p = NULL;
+                break;
             default:
                 break;
         }

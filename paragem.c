@@ -24,6 +24,8 @@ pparagem menuParagens(pparagem p, int* totalParagens){
             case 3:
                 p = eliminarParagem(p, totalParagens);
                 break;
+            default:
+                break;
         }
     }while(opcao != 4);
     return p;
@@ -34,7 +36,7 @@ void getInfoParagem(pparagem p, int total){
     char numero[3];
     int aux = 2;
     printf("\nNome:");
-    scanf("%s", p[total].nome); //TODO: alterar para getLine
+    scanf(" %99[^\n]", p[total].nome);
     while(total % 10 > 9){
         aux--;
         total = total % 10;
@@ -104,7 +106,11 @@ pparagem eliminarParagem(pparagem p, int* totalParagens){
             else{
                 (*totalParagens)--;
                 p = aux;
+                if(*totalParagens == 0){
+                    return NULL;
+                }
             }
+
         }
     }
     return p;
