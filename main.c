@@ -13,6 +13,10 @@ int main() {
     plinha l = NULL; //lista ligada
     int totalParagens = 0;
     int opcao;
+
+    //ler informacao previamente gravada em ficheiro
+    p = recuperaParagens(&totalParagens);
+
     do{
         printf("\n ***** MENU ***** \n");
         printf("1 - Operacoes sobre paragens\n");

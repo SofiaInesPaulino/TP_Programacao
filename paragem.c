@@ -127,7 +127,6 @@ int existeParagem(pparagem p, int totalParagens, char* codigo){
 
 void guardaParagens(pparagem p, int totalParagens){
     FILE* f;
-    int i;
 
     f = fopen("paragens.dat", "wb");
     if(f == NULL){
@@ -136,8 +135,29 @@ void guardaParagens(pparagem p, int totalParagens){
     }
     printf("A guardar paragens em ficheiro\n");
     fwrite(&totalParagens, sizeof(int), 1, f);
-    for(i = 0; i < totalParagens; i++){
-        fwrite((p + i), sizeof(paragem), 1, f);
-    }
+    fwrite(p, sizeof(paragem), totalParagens, f);
     fclose(f);
+}
+
+pparagem recuperaParagens(int * totalParagens){
+    FILE* f;
+    pparagem p = NULL;
+
+    *totalParagens = 0;
+    f = fopen("paragens.dat", "rb");
+    if(f == NULL){
+        //TODO: mensagem de erro: ficheiro pode nao existir ou erro a aceder a ficheiro
+        return NULL;
+    }
+    fread(totalParagens, sizeof(int), 1, f);
+    p = malloc(sizeof(paragem) * (*totalParagens));
+    if(p == NULL){
+        printf("Erro a alocar memoria\n");
+        fclose(f);
+        *totalParagens = 0;
+        return NULL;
+    }
+    fread(p, sizeof(paragem), *totalParagens, f);
+    fclose(f);
+    return p;
 }
