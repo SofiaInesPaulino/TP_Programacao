@@ -146,7 +146,7 @@ pparagem recuperaParagens(int * totalParagens){
     *totalParagens = 0;
     f = fopen("paragens.dat", "rb");
     if(f == NULL){
-        //TODO: mensagem de erro: ficheiro pode nao existir ou erro a aceder a ficheiro
+        printf("Ficheiro de paragens nao existe ou erro a aceder-lhe!\n");
         return NULL;
     }
     fread(totalParagens, sizeof(int), 1, f);

@@ -271,7 +271,54 @@ void guardaLinhas(plinha l){
     printf("A guardar linhas em ficheiro\n");
     while(l != NULL){
         fwrite(l, sizeof(linha), 1, f);
+        fwrite(l->paragens, sizeof(char) * 5, l->totalP, f);
         l = l->prox;
     }
     fclose(f);
+}
+
+plinha recuperaLinhas(){
+    plinha novo, p = NULL;
+    char* aux;
+    linha lin;
+    FILE* f;
+    f = fopen("linhas.dat", "rb");
+    if(f == NULL){
+        printf("Ficheiro de linhas nao existe ou erro a aceder-lhe!\n");
+        return NULL;
+    }
+    while(fread(&lin, sizeof(linha), 1, f) == 1){
+        novo = malloc(sizeof(linha));
+        aux = malloc(sizeof(char) * 5 * lin.totalP);
+        if(novo == NULL){
+            printf("Erro a alocar memoria\n");
+            fclose(f);
+            return p;
+        }
+        if(aux == NULL){
+            printf("Erro a alocar memoria\n");
+            free(novo);
+            fclose(f);
+            return p;
+        }
+        fread(aux, sizeof(char) * 5, lin.totalP, f);
+        lin.paragens = aux;
+        *novo = lin;
+        novo->prox = NULL; //porque não vai ficar no mesmo lugar de memória que ficou da última vez
+        p = insereNoFinal(p, novo);
+    }
+    fclose(f);
+    return p;
+}
+
+plinha insereNoFinal(plinha p, plinha novo){
+    plinha aux = p;
+    if(aux == NULL){
+        p = novo;
+        return p;
+    }
+    while(aux->prox != NULL)
+        aux = aux->prox;
+    aux->prox = novo;
+    return p;
 }

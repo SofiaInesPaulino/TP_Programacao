@@ -16,8 +16,8 @@ typedef struct linha linha, *plinha;
 
 struct linha{
     char nome[100];
-    char *paragens;
     int totalP; //quantas paragens que há nesta linha
+    char *paragens;
     plinha prox;
     plinha ant;
 };
@@ -41,5 +41,9 @@ plinha removerParagem(char* nome, plinha l, int totalParagens, pparagem p);
 void libertarLinhas(plinha l);
 
 void guardaLinhas(plinha l);
+
+plinha recuperaLinhas();
+
+plinha insereNoFinal(plinha p, plinha novo);
 
 #endif //TP_LINHA_H

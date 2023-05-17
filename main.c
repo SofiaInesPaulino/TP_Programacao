@@ -16,6 +16,7 @@ int main() {
 
     //ler informacao previamente gravada em ficheiro
     p = recuperaParagens(&totalParagens);
+    l = recuperaLinhas();
 
     do{
         printf("\n ***** MENU ***** \n");
