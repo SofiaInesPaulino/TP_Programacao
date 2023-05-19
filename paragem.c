@@ -32,6 +32,7 @@ pparagem menuParagens(pparagem p, int* totalParagens){
 }
 
 void getInfoParagem(pparagem p, int total){
+    //TODO: verificar como criar o codigo
     char codigo[4] = "P";
     char numero[3];
     int aux = 2;

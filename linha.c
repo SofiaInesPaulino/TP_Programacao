@@ -7,6 +7,7 @@
 
 plinha menuLinhas(plinha l, int totalParagens, pparagem p){
     int opcao;
+    char ficheiro[100];
     do{
         printf("\n ***** MENU LINHAS ***** \n");
         printf("1 - Adicionar Linha Manualmente\n");
@@ -20,7 +21,9 @@ plinha menuLinhas(plinha l, int totalParagens, pparagem p){
                 l = adicionarLinhaManualmente(l, totalParagens, p);
                 break;
             case 2:
-                printf("Funcao por implementar");
+                printf("Nome do ficheiro:");
+                scanf("%s", ficheiro);
+                l = adicionarLinhasFicheiroTexto(l, totalParagens, p, ficheiro);
                 break;
             case 3:
                 visualizarLinhas(l);
@@ -100,6 +103,84 @@ plinha adicionarLinhaManualmente(plinha l, int totalParagens, pparagem p){
     }
     novo->ant = NULL;
     l = novo;
+    return l;
+}
+
+plinha adicionarLinhasFicheiroTexto(plinha l, int totalParagens, pparagem p, char* nomeF){
+    FILE* f;
+    plinha lin;
+    paragem par;
+    char* aux = NULL;
+    int cont = 0;
+
+
+    f = fopen(nomeF, "r");
+    if(f == NULL){
+        printf("Erro a aceder ao ficheiro\n");
+        return NULL;
+    }
+
+    lin = malloc(sizeof(linha));
+    if(lin == NULL){
+        printf("ERRO a alocar memoria para a linha!\n");
+        return NULL;
+    }
+    lin->totalP = 0;
+    lin->paragens = NULL;
+    lin->prox = NULL;
+
+    fscanf(f," %99[^\n]", lin->nome);
+
+    if(existeLinha(l, lin->nome)){
+        printf("ERRO! Ja existe uma linha com esse nome!\n");
+        return l;
+    }
+
+    while(fscanf(f, " %99[^#] #  %4[^\n]", par.nome, par.codigo) == 2){
+        par.codigo[4] = '\0';
+        if(!existeParagem(p, totalParagens, par.codigo)){
+            printf("%s", par.codigo);
+            printf("A paragem %s nao existe, logo nao pode ser inserida nesta linha\n", par.codigo);
+        }
+        else{ //TODO: verificar se o codigo e o nome sao da mesma paragem
+            if(lin->paragens != NULL){
+                for(int i = 0; i < lin->totalP * 5; i += 5){
+                    for(int j = 0; j < 5; j++){
+                        if(lin->paragens[i + j] == par.codigo[j])
+                            cont ++;
+                        else
+                            cont = 0;
+                    }
+                    if(cont == 5)
+                        break;
+                }
+            }
+
+            if(cont == 5){
+                printf("A paragem %s ja foi adicionada a linha\n", par.codigo);
+            }
+            else{
+                aux = realloc(lin->paragens, (sizeof(char) * 5) * (lin->totalP + 1));
+                if(aux == NULL){
+                    printf("Erro na realocacao!\n");
+                    return l;
+                }
+                for(int i = 0; i < totalParagens; i++){
+                    if(strcmp(p[i].codigo, par.codigo) == 0){
+                        p[i].linhas++;
+                        break;
+                    }
+                }
+                lin->paragens = aux;
+                for(int i = 0; i < 5; i++){
+                    lin->paragens[lin->totalP * 5 + i] = par.codigo[i];
+                }
+                lin->totalP++;
+            }
+        }
+    }
+    lin->prox = l;
+    l = lin;
     return l;
 }
 
@@ -301,7 +382,7 @@ plinha recuperaLinhas(){
             fclose(f);
             return p;
         }
-        fread(aux, sizeof(char) * 5, lin.totalP, f);
+        fread(aux, sizeof(char) * 5, lin.totalP, f); //TODO: verificar se todas as paragens existem
         lin.paragens = aux;
         *novo = lin;
         novo->prox = NULL; //porque não vai ficar no mesmo lugar de memória que ficou da última vez

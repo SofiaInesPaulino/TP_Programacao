@@ -30,6 +30,8 @@ void getInfoLinhas(plinha l, plinha linha, int totalParagens, pparagem p);
 
 plinha adicionarLinhaManualmente(plinha l, int totalParagens, pparagem p);
 
+plinha adicionarLinhasFicheiroTexto(plinha l, int totalParagens, pparagem p, char* nomeF);
+
 void visualizarLinhas(plinha l);
 
 plinha atualizarLinha(plinha l, int totalParagens, pparagem p);
