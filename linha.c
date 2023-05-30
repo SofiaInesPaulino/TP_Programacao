@@ -110,9 +110,8 @@ plinha adicionarLinhasFicheiroTexto(plinha l, int totalParagens, pparagem p, cha
     FILE* f;
     plinha lin;
     paragem par;
-    char* aux = NULL;
-    int cont = 0;
-
+    char* aux = NULL, *parAux;
+    int cont = 0, x;
 
     f = fopen(nomeF, "r");
     if(f == NULL){
@@ -137,12 +136,18 @@ plinha adicionarLinhasFicheiroTexto(plinha l, int totalParagens, pparagem p, cha
     }
 
     while(fscanf(f, " %99[^#] #  %4[^\n]", par.nome, par.codigo) == 2){
+        x = 0;
+        for(int i = 0; i < 99 && par.nome[i] != '\0'; i++){
+            x++;
+        }
+        par.nome[x - 1] = '\0';
         par.codigo[4] = '\0';
+        parAux = getCodigo(par.nome, p, totalParagens);
         if(!existeParagem(p, totalParagens, par.codigo)){
             printf("%s", par.codigo);
             printf("A paragem %s nao existe, logo nao pode ser inserida nesta linha\n", par.codigo);
         }
-        else{ //TODO: verificar se o codigo e o nome sao da mesma paragem
+        else if(parAux != NULL && strcmp(par.codigo, parAux) == 0){//existe e o nome e codigo pertencem à mesma paragem
             if(lin->paragens != NULL){
                 for(int i = 0; i < lin->totalP * 5; i += 5){
                     for(int j = 0; j < 5; j++){
@@ -178,7 +183,16 @@ plinha adicionarLinhasFicheiroTexto(plinha l, int totalParagens, pparagem p, cha
                 lin->totalP++;
             }
         }
+        else{
+            printf("Codigo(%s) e Nome(%s) nao pertencem a mesma paragem!\n", par.codigo, par.nome);
+        }
     }
+
+    if(lin->totalP == 0){
+        free(lin);
+        return l;
+    }
+
     lin->prox = l;
     l = lin;
     return l;
@@ -402,4 +416,81 @@ plinha insereNoFinal(plinha p, plinha novo){
         aux = aux->prox;
     aux->prox = novo;
     return p;
+}
+
+void calcularPercurso(plinha l, pparagem p, int totalParagens){
+    char* codOrigem, *codDestino, origem[100], destino[100];
+    int posDes, posOr, iguaisOr, iguaisDes;
+
+    printf("\nOrigem:");
+    scanf(" %99[^\n]", origem);
+
+    codOrigem = getCodigo(origem, p, totalParagens);
+    if(codOrigem == NULL){
+        printf("Paragem nao existe!\n");
+        return;
+    }
+
+    printf("\nDestino:");
+    scanf(" %99[^\n]", destino);
+
+    codDestino = getCodigo(destino, p, totalParagens);
+    if(codDestino == NULL){
+        printf("Paragem nao existe!\n");
+        return;
+    }
+
+    while(l != NULL){
+        posDes = posOr = -1;
+        for(int i = 0; i < l->totalP; i++){ //verifica se as duas paragens existem na mesma linha
+            iguaisOr = iguaisDes = 1;
+            for(int j = 0; j < 5; j++){
+                if(l->paragens[i * 5 + j] != codOrigem[j])
+                    iguaisOr = 0;
+
+                if(l->paragens[i * 5 + j] != codDestino[j])
+                    iguaisDes = 0;
+            }
+            if(iguaisDes == 1)
+                posDes = i;
+            if(iguaisOr == 1)
+                posOr = i;
+        }
+        if(posDes != -1 && posOr != -1){ //possivel ir da origem ao destino na mesma linha
+            printf("\nLinha: %s\nParagens:\n", l->nome);
+            if(posDes == posOr){
+                printf("Origem e Destino coincidem!\n");
+                return;
+            }
+            if(posDes > posOr){
+                for(int i = posOr; i <= posDes; i++){
+                    for(int j = 0; j < totalParagens; j++){
+                        int iguais = 1;
+                        for(int k = 0; k < 5; k++){
+                            if(p[j].codigo[k] != l->paragens[i * 5 + k]){
+                                iguais = 0;
+                            }
+                        }
+                        if(iguais == 1)
+                            printf("%s %s\n", p[j].nome, p[j].codigo);
+                    }
+                }
+            }
+            else{
+                for(int i = posOr; i >= posDes; i--){
+                    for(int j = 0; j < totalParagens; j++){
+                        int iguais = 1;
+                        for(int k = 0; k < 5; k++){
+                            if(p[j].codigo[k] != l->paragens[i * 5 + k]){
+                                iguais = 0;
+                            }
+                        }
+                        if(iguais == 1)
+                            printf("%s %s\n", p[j].nome, p[j].codigo);
+                    }
+                }
+            }
+        }
+        l = l->prox;
+    }
 }

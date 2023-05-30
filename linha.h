@@ -48,4 +48,6 @@ plinha recuperaLinhas();
 
 plinha insereNoFinal(plinha p, plinha novo);
 
+void calcularPercurso(plinha l, pparagem p, int totalParagens);
+
 #endif //TP_LINHA_H

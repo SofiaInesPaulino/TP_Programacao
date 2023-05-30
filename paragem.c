@@ -32,7 +32,6 @@ pparagem menuParagens(pparagem p, int* totalParagens){
 }
 
 void getInfoParagem(pparagem p, int total){
-    //TODO: verificar como criar o codigo
     char codigo[4] = "P";
     char numero[3];
     int aux = 2;
@@ -161,4 +160,13 @@ pparagem recuperaParagens(int * totalParagens){
     fread(p, sizeof(paragem), *totalParagens, f);
     fclose(f);
     return p;
+}
+
+char* getCodigo(char* nomeParagem, pparagem p, int totalParagens){
+    for(int i = 0; i < totalParagens; i++){
+        if(strcmp(p[i].nome, nomeParagem) == 0){
+            return p[i].codigo;
+        }
+    }
+    return NULL;
 }

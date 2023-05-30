@@ -22,7 +22,8 @@ int main() {
         printf("\n ***** MENU ***** \n");
         printf("1 - Operacoes sobre paragens\n");
         printf("2 - Operacoes sobre linhas\n");
-        printf("3 - Sair\n");
+        printf("3 - Calcular percurso\n");
+        printf("4 - Sair\n");
         scanf("%d", &opcao);
         switch(opcao){
             case 1:
@@ -32,6 +33,9 @@ int main() {
                 l = menuLinhas(l, totalParagens, p);
                 break;
             case 3:
+                calcularPercurso(l, p, totalParagens);
+                break;
+            case 4:
                 //guardar informacao em ficheiros
                 guardaParagens(p, totalParagens);
                 guardaLinhas(l);
@@ -44,6 +48,6 @@ int main() {
             default:
                 break;
         }
-    }while(opcao != 3);
+    }while(opcao != 4);
     return 0;
 }

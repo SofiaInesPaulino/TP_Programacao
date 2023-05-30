@@ -32,6 +32,8 @@ int existeParagem(pparagem p, int totalParagens, char* codigo);
 
 void guardaParagens(pparagem p, int totalParagens);
 
-pparagem recuperaParagens(int * totalParagens);
+pparagem recuperaParagens(int* totalParagens);
+
+char* getCodigo(char* nomeParagem, pparagem p, int totalParagens);
 
 #endif //TP_PARAGEM_H
