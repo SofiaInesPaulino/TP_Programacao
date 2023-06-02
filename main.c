@@ -11,7 +11,7 @@
 int main() {
     pparagem p = NULL; //array dinamico
     plinha l = NULL; //lista ligada
-    int totalParagens = 0;
+    int totalParagens = 0, id= 0;
     int opcao;
 
     //ler informacao previamente gravada em ficheiro
@@ -27,7 +27,7 @@ int main() {
         scanf("%d", &opcao);
         switch(opcao){
             case 1:
-                p = menuParagens(p, &totalParagens);
+                p = menuParagens(p, &totalParagens, &id);
                 break;
             case 2:
                 l = menuLinhas(l, totalParagens, p);

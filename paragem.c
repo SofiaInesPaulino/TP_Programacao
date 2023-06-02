@@ -5,7 +5,7 @@
 
 #include "paragem.h"
 
-pparagem menuParagens(pparagem p, int* totalParagens){
+pparagem menuParagens(pparagem p, int* totalParagens, int *id){
     int opcao;
     do{
         printf("\n ***** MENU PARAGENS ***** \n");
@@ -16,7 +16,7 @@ pparagem menuParagens(pparagem p, int* totalParagens){
         scanf("%d", &opcao);
         switch(opcao){
             case 1:
-                p = registarParagem(p, totalParagens);
+                p = registarParagem(p, totalParagens, id);
                 break;
             case 2:
                 visualizarParagens(p, *totalParagens);
@@ -31,20 +31,22 @@ pparagem menuParagens(pparagem p, int* totalParagens){
     return p;
 }
 
-void getInfoParagem(pparagem p, int total){
+void getInfoParagem(pparagem p, int total, int id){
     char codigo[4] = "P";
     char numero[3];
     int aux = 2;
-    printf("\nNome:");
-    scanf(" %99[^\n]", p[total].nome);
-    while(total % 10 > 9){
+    do{
+        printf("\nNome:");
+        scanf(" %99[^\n]", p[total].nome);
+    }while(getCodigo(p[total].nome, p, total) != NULL);
+    while(id % 10 > 9){
         aux--;
-        total = total % 10;
+        id = id % 10;
     }
     for(int i = 0; i < aux; i++){
         strcat(codigo, "0");
     }
-    itoa(total, numero, 10);
+    itoa(id, numero, 10);
     strcpy(p[total].codigo, strcat(codigo, numero));
     strcat(p[total].codigo, "\0");
     p[total].linhas = 0;
@@ -57,14 +59,15 @@ void visualizarParagens(pparagem p, int total){
     putchar('\n');
 }
 
-pparagem registarParagem(pparagem p, int* totalParagens){
+pparagem registarParagem(pparagem p, int* totalParagens, int* id){
     paragem* aux = realloc(p, sizeof(paragem)*((*totalParagens) + 1));
     if(aux == NULL){
         printf("ERRO na alocacao de memoria\n");
         return p;
     }
     p = aux;
-    getInfoParagem(p, *totalParagens);
+    getInfoParagem(p, *totalParagens, *id);
+    (*id)++;
     (*totalParagens)++;
     return p;
 }
@@ -72,6 +75,7 @@ pparagem registarParagem(pparagem p, int* totalParagens){
 pparagem eliminarParagem(pparagem p, int* totalParagens){
     if(p == NULL){
         printf("Nao ha paragens para eliminar!\n");
+        return p;
     }
     char codigo[4];
     paragem par;

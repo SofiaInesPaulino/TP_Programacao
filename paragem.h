@@ -18,11 +18,11 @@ struct paragem{
     int linhas;
 };
 
-pparagem menuParagens(pparagem p, int* totalParagens);
+pparagem menuParagens(pparagem p, int* totalParagens, int* id);
 
-void getInfoParagem(pparagem p, int total);
+void getInfoParagem(pparagem p, int total, int id);
 
-pparagem registarParagem(pparagem p, int* totalParagens);
+pparagem registarParagem(pparagem p, int* totalParagens, int* id);
 
 void visualizarParagens(pparagem p, int total);
 
