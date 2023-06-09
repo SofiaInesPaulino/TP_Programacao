@@ -418,68 +418,58 @@ plinha insereNoFinal(plinha p, plinha novo){
     return p;
 }
 
-void calcularPercursoUmaLinha(plinha l, pparagem p, int totalParagens){
+void calcularPercursoUmaLinha(plinha l, pparagem p, int totalParagens, char *codOrigem[5], char *codDestino[5]) {
     int posDes, posOr, iguaisOr, iguaisDes, aux;
-    char* codOrigem[5], *codDestino[5];
 
-    getInfoPercurso(codOrigem, codDestino, p, totalParagens);
+    //possivel ir da origem ao destino na mesma linha
 
-    aux = verificaOrigemDestino(l, (const char*)codOrigem, (const char*)codDestino);
-    if(!aux)
+    posDes = posOr = -1;
+    for(int i = 0; i < l->totalP; i++){
+        iguaisOr = iguaisDes = 1;
+        for(int j = 0; j < 4; j++){
+            if(l->paragens[i * 5 + j] != (*codOrigem)[j])
+                iguaisOr = 0;
+
+            if(l->paragens[i * 5 + j] != (*codDestino)[j])
+                iguaisDes = 0;
+        }
+        if(iguaisDes == 1)
+            posDes = i;
+        if(iguaisOr == 1)
+            posOr = i;
+    }
+    printf("\nLinha: %s\nParagens:\n", l->nome);
+    if(posDes == posOr){
+        printf("Origem e Destino coincidem!\n");
         return;
-
-    while(l != NULL){ //TODO: remover este ciclo
-        posDes = posOr = -1;
-        for(int i = 0; i < l->totalP; i++){ //verifica se as duas paragens existem na mesma linha
-            iguaisOr = iguaisDes = 1;
-            for(int j = 0; j < 5; j++){
-                if(l->paragens[i * 5 + j] != codOrigem[j])
-                    iguaisOr = 0;
-
-                if(l->paragens[i * 5 + j] != codDestino[j])
-                    iguaisDes = 0;
-            }
-            if(iguaisDes == 1)
-                posDes = i;
-            if(iguaisOr == 1)
-                posOr = i;
-        }
-        if(posDes != -1 && posOr != -1){ //possivel ir da origem ao destino na mesma linha
-            printf("\nLinha: %s\nParagens:\n", l->nome);
-            if(posDes == posOr){
-                printf("Origem e Destino coincidem!\n");
-                return;
-            }
-            if(posDes > posOr){
-                for(int i = posOr; i <= posDes; i++){
-                    for(int j = 0; j < totalParagens; j++){
-                        int iguais = 1;
-                        for(int k = 0; k < 5; k++){
-                            if(p[j].codigo[k] != l->paragens[i * 5 + k]){
-                                iguais = 0;
-                            }
-                        }
-                        if(iguais == 1)
-                            printf("%s %s\n", p[j].nome, p[j].codigo);
+    }
+    if(posDes > posOr){
+        for(int i = posOr; i <= posDes; i++){
+            for(int j = 0; j < totalParagens; j++){
+                int iguais = 1;
+                for(int k = 0; k < 5; k++){
+                    if(p[j].codigo[k] != l->paragens[i * 5 + k]){
+                        iguais = 0;
                     }
                 }
-            }
-            else{
-                for(int i = posOr; i >= posDes; i--){
-                    for(int j = 0; j < totalParagens; j++){
-                        int iguais = 1;
-                        for(int k = 0; k < 5; k++){
-                            if(p[j].codigo[k] != l->paragens[i * 5 + k]){
-                                iguais = 0;
-                            }
-                        }
-                        if(iguais == 1)
-                            printf("%s %s\n", p[j].nome, p[j].codigo);
-                    }
-                }
+                if(iguais == 1)
+                    printf("- %s %s\n", p[j].nome, p[j].codigo);
             }
         }
-        l = l->prox;
+    }
+    else{
+        for(int i = posOr; i >= posDes; i--){
+            for(int j = 0; j < totalParagens; j++){
+                int iguais = 1;
+                for(int k = 0; k < 5; k++){
+                    if(p[j].codigo[k] != l->paragens[i * 5 + k]){
+                        iguais = 0;
+                    }
+                }
+                if(iguais == 1)
+                    printf("%s %s\n", p[j].nome, p[j].codigo);
+            }
+        }
     }
 }
 
@@ -529,8 +519,16 @@ void getInfoPercurso(char** codOrigem, char** codDestino, pparagem p, int totalP
 
 void calcularPercursos(plinha l, pparagem p, int totalParagens){
     char *codOrigem[5], *codDestino[5];
+    plinha aux = l;
 
     getInfoPercurso(codOrigem, codDestino, p, totalParagens);
+    if(*codDestino == NULL || *codOrigem == NULL)
+        return;
 
-    calcularPercursoUmaLinha(l, p, totalParagens);
+    while(aux != NULL){
+        if(verificaOrigemDestino(aux, *codOrigem, *codDestino) == 1)
+            calcularPercursoUmaLinha(aux, p, totalParagens, codOrigem, codDestino);
+        aux = aux->prox;
+    }
+
 }

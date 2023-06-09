@@ -48,7 +48,7 @@ plinha recuperaLinhas();
 
 plinha insereNoFinal(plinha p, plinha novo);
 
-void calcularPercursoUmaLinha(plinha l, pparagem p, int totalParagens);
+void calcularPercursoUmaLinha(plinha l, pparagem p, int totalParagens, char *codOrigem[5], char *codDestino[5]);
 
 int verificaOrigemDestino(plinha l, const char* codOrigem, const char* codDestino);
 
