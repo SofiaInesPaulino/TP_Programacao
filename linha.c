@@ -418,29 +418,17 @@ plinha insereNoFinal(plinha p, plinha novo){
     return p;
 }
 
-void calcularPercurso(plinha l, pparagem p, int totalParagens){
-    char* codOrigem, *codDestino, origem[100], destino[100];
-    int posDes, posOr, iguaisOr, iguaisDes;
+void calcularPercursoUmaLinha(plinha l, pparagem p, int totalParagens){
+    int posDes, posOr, iguaisOr, iguaisDes, aux;
+    char* codOrigem[5], *codDestino[5];
 
-    printf("\nOrigem:");
-    scanf(" %99[^\n]", origem);
+    getInfoPercurso(codOrigem, codDestino, p, totalParagens);
 
-    codOrigem = getCodigo(origem, p, totalParagens);
-    if(codOrigem == NULL){
-        printf("Paragem nao existe!\n");
+    aux = verificaOrigemDestino(l, (const char*)codOrigem, (const char*)codDestino);
+    if(!aux)
         return;
-    }
 
-    printf("\nDestino:");
-    scanf(" %99[^\n]", destino);
-
-    codDestino = getCodigo(destino, p, totalParagens);
-    if(codDestino == NULL){
-        printf("Paragem nao existe!\n");
-        return;
-    }
-
-    while(l != NULL){
+    while(l != NULL){ //TODO: remover este ciclo
         posDes = posOr = -1;
         for(int i = 0; i < l->totalP; i++){ //verifica se as duas paragens existem na mesma linha
             iguaisOr = iguaisDes = 1;
@@ -493,4 +481,56 @@ void calcularPercurso(plinha l, pparagem p, int totalParagens){
         }
         l = l->prox;
     }
+}
+
+int verificaOrigemDestino(plinha l, const char* codOrigem, const char* codDestino){
+    int or, des, existeOr = 0, existeDes = 0;
+    for(int i = 0; i < l->totalP; i++){
+        or = des = 1;
+        for(int j = 0; j < 5; j++){
+            if(codOrigem[j] != l->paragens[i * 5 + j]){
+                or = 0;
+            }
+            if(codDestino[j] != l->paragens[i * 5 + j]){
+                des = 0;
+            }
+        }
+        if(or)
+            existeOr = 1;
+        if(des)
+            existeDes = 1;
+        if(existeOr && existeDes)
+            return 1;
+    }
+    return 0;
+}
+
+void getInfoPercurso(char** codOrigem, char** codDestino, pparagem p, int totalParagens){
+    char origem[100], destino[100];
+
+    printf("\nOrigem:");
+    scanf(" %99[^\n]", origem);
+
+    *codOrigem = getCodigo(origem, p, totalParagens);
+    if(codOrigem == NULL){
+        printf("Paragem nao existe!\n");
+        return;
+    }
+
+    printf("\nDestino:");
+    scanf(" %99[^\n]", destino);
+
+    *codDestino = getCodigo(destino, p, totalParagens);
+    if(codDestino == NULL){
+        printf("Paragem nao existe!\n");
+        return;
+    }
+}
+
+void calcularPercursos(plinha l, pparagem p, int totalParagens){
+    char *codOrigem[5], *codDestino[5];
+
+    getInfoPercurso(codOrigem, codDestino, p, totalParagens);
+
+    calcularPercursoUmaLinha(l, p, totalParagens);
 }

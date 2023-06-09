@@ -33,7 +33,8 @@ int main() {
                 l = menuLinhas(l, totalParagens, p);
                 break;
             case 3:
-                calcularPercurso(l, p, totalParagens);
+                //calcularPercursoUmaLinha(l, p, totalParagens);
+                calcularPercursos(l, p, totalParagens);
                 break;
             case 4:
                 //guardar informacao em ficheiros

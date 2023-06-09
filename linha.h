@@ -48,6 +48,12 @@ plinha recuperaLinhas();
 
 plinha insereNoFinal(plinha p, plinha novo);
 
-void calcularPercurso(plinha l, pparagem p, int totalParagens);
+void calcularPercursoUmaLinha(plinha l, pparagem p, int totalParagens);
+
+int verificaOrigemDestino(plinha l, const char* codOrigem, const char* codDestino);
+
+void getInfoPercurso(char** codOrigem, char** codDestino, pparagem p, int totalParagens);
+
+void calcularPercursos(plinha l, pparagem p, int totalParagens);
 
 #endif //TP_LINHA_H
