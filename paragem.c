@@ -32,7 +32,7 @@ pparagem menuParagens(pparagem p, int* totalParagens, int *id){
 }
 
 void getInfoParagem(pparagem p, int total, int id){
-    char codigo[4] = "P";
+    char codigo[5] = "P";
     char numero[3];
     int aux = 2;
     do{
@@ -47,6 +47,7 @@ void getInfoParagem(pparagem p, int total, int id){
         strcat(codigo, "0");
     }
     itoa(id, numero, 10);
+    codigo[4] = '\0';
     strcpy(p[total].codigo, strcat(codigo, numero));
     strcat(p[total].codigo, "\0");
     p[total].linhas = 0;
@@ -77,7 +78,7 @@ pparagem eliminarParagem(pparagem p, int* totalParagens){
         printf("Nao ha paragens para eliminar!\n");
         return p;
     }
-    char codigo[4];
+    char codigo[5];
     paragem par;
     pparagem aux;
     printf("\nCodigo da paragem a eliminar:");

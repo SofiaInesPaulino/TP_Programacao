@@ -144,7 +144,7 @@ plinha adicionarLinhasFicheiroTexto(plinha l, int totalParagens, pparagem p, cha
         par.codigo[4] = '\0';
         parAux = getCodigo(par.nome, p, totalParagens);
         if(!existeParagem(p, totalParagens, par.codigo)){
-            printf("%s", par.codigo);
+            printf("%s ", par.codigo);
             printf("A paragem %s nao existe, logo nao pode ser inserida nesta linha\n", par.codigo);
         }
         else if(parAux != NULL && strcmp(par.codigo, parAux) == 0){//existe e o nome e codigo pertencem à mesma paragem
@@ -425,7 +425,7 @@ plinha insereNoFinal(plinha p, plinha novo){
     return p;
 }
 
-void calcularPercursoUmaLinha(plinha l, pparagem p, int totalParagens, char *codOrigem[5], char *codDestino[5]) {
+void calcularPercursoUmaLinha(plinha l, pparagem p, int totalParagens, const char codOrigem[5], const char codDestino[5]) {
     int posDes, posOr, iguaisOr, iguaisDes, aux;
 
     //possivel ir da origem ao destino na mesma linha
@@ -434,10 +434,10 @@ void calcularPercursoUmaLinha(plinha l, pparagem p, int totalParagens, char *cod
     for(int i = 0; i < l->totalP; i++){
         iguaisOr = iguaisDes = 1;
         for(int j = 0; j < 4; j++){
-            if(l->paragens[i * 5 + j] != (*codOrigem)[j])
+            if(l->paragens[i * 5 + j] != codOrigem[j])
                 iguaisOr = 0;
 
-            if(l->paragens[i * 5 + j] != (*codDestino)[j])
+            if(l->paragens[i * 5 + j] != codDestino[j])
                 iguaisDes = 0;
         }
         if(iguaisDes == 1)
@@ -547,55 +547,56 @@ void calcularPercursos(plinha l, pparagem p, int totalParagens){
         return;
 
     while(aux != NULL){
-        /*if(verificaOrigemDestino(aux, *codOrigem, *codDestino) == 1)
-            calcularPercursoUmaLinha(aux, p, totalParagens, codOrigem, codDestino);*/ //TODO: remover?
+        if(verificaOrigemDestino(aux, *codOrigem, *codDestino) == 1)
+            calcularPercursoUmaLinha(aux, p, totalParagens, *codOrigem, *codDestino);
         if(verificaOrigem(aux, *codOrigem) == 1)
-            calculaPercursoDuasLinhas(aux, p, totalParagens, codOrigem, codDestino);
+            calculaPercursoDuasLinhas(aux, p, totalParagens, *codOrigem, *codDestino);
         aux = aux->prox;
     }
 }
 
-void calculaPercursoDuasLinhas(plinha l, pparagem p, int totalParagens, char* codOrigem[5], char* codDestino[5]){
+void calculaPercursoDuasLinhas(plinha l, pparagem p, int totalParagens, char* codOrigem, char* codDestino){
     plinha aux;
     int or, dest;
-    char* codTemp[5];
+    char codTemp[5];
     for(int i = 0; i < l->totalP; i++){
         or = dest = 1;
         for(int j = 0; j < 5; j++){
-            if((*codOrigem)[j] != l->paragens[i * 5 + j]){
+            if(codOrigem[j] != l->paragens[i * 5 + j]){
                 or = 0;
             }
-            if((*codDestino[j]) != l->paragens[i * 5 + j]){
+            if(codDestino[j] != l->paragens[i * 5 + j]){
                 dest = 0;
             }
         }
 
         if(!dest && !or){
             for(int j = 0; j < 5; j++)
-                *(codTemp + j) = &l->paragens[i * 5 + j];
+                codTemp[j] = l->paragens[i * 5 + j];
 
             //percorrer linhas prox
             aux = l->prox;
             while(aux != NULL){
-                if(verificaOrigemDestino(aux, *codTemp, *codDestino) == 1){
-                    calcularPercursoUmaLinha(l, p, totalParagens, codOrigem, codTemp);
-                    if(strcmp(*codTemp, *codDestino) != 0)
+                if(verificaOrigemDestino(aux, codTemp, codDestino) == 1){
+                    if(strcmp(codTemp, codDestino) != 0) {
+                        calcularPercursoUmaLinha(l, p, totalParagens, codOrigem, codTemp);
                         calcularPercursoUmaLinha(aux, p, totalParagens, codTemp, codDestino);
+                    }
+                    printf("\n_____\n");
                 }
-                printf("\n_____\n");
                 aux = aux->prox;
             }
 
             //percorrer linhas ant
             aux = l->ant;
             while(aux != NULL){
-                if(verificaOrigemDestino(aux, *codTemp, *codDestino) == 1){
-                    if(strcmp(*codTemp, *codDestino) != 0){
+                if(verificaOrigemDestino(aux, codTemp, codDestino) == 1){
+                    if(strcmp(codTemp, codDestino) != 0){
                         calcularPercursoUmaLinha(l, p, totalParagens, codOrigem, codTemp);
                         calcularPercursoUmaLinha(aux, p, totalParagens, codTemp, codDestino);
                     }
+                    printf("\n_____\n");
                 }
-                printf("\n_____\n");
                 aux = aux->ant;
             }
         }
