@@ -116,13 +116,13 @@ plinha adicionarLinhasFicheiroTexto(plinha l, int totalParagens, pparagem p, cha
     f = fopen(nomeF, "r");
     if(f == NULL){
         printf("Erro a aceder ao ficheiro\n");
-        return NULL;
+        return l;
     }
 
     lin = malloc(sizeof(linha));
     if(lin == NULL){
         printf("ERRO a alocar memoria para a linha!\n");
-        return NULL;
+        return l;
     }
     lin->totalP = 0;
     lin->paragens = NULL;
@@ -194,6 +194,12 @@ plinha adicionarLinhasFicheiroTexto(plinha l, int totalParagens, pparagem p, cha
     }
 
     lin->prox = l;
+
+    if(l != NULL){
+        l->ant = lin;
+    }
+    lin->ant = NULL;
+
     l = lin;
     return l;
 }
@@ -296,12 +302,6 @@ plinha removerParagem(char* nome, plinha l, int totalParagens, pparagem p){
                 iguais = 0;
         }
         if(iguais == 1){
-            strcpy(paragemARemover, paragem);
-            for(int k = j; k < aux->totalP; k++){
-                for(int z = 0; z < 5; z++){
-                    aux->paragens[k + z] = aux->paragens[k + z + 5];
-                }
-            }
             if(aux->totalP == 1){
                 free(aux->paragens);
                 if(ant == NULL){
@@ -320,12 +320,19 @@ plinha removerParagem(char* nome, plinha l, int totalParagens, pparagem p){
                 }
                 return l;
             }
+
+            strcpy(paragemARemover, paragem);
+            for(int k = j; k < aux->totalP; k++){
+                for(int z = 0; z < 5; z++){
+                    aux->paragens[(k * 5) + z] = aux->paragens[(k * 5) + z + 5];
+                }
+            }
             paragemAux = realloc(aux->paragens, aux->totalP - 1);
             if(paragemAux == NULL){
                 printf("Erro a remover paragem\n");
                 for(int k = aux->totalP - 1; k > j; k--){
                     for(int z = 4; z >= 0; z--){
-                        aux->paragens[k + z] = aux->paragens[k + z - 5];
+                        aux->paragens[(k * 5) + z] = aux->paragens[(k * 5) + z - 5];
                     }
                 }
                 for(int z = 0; z < 5; z++){
@@ -495,6 +502,20 @@ int verificaOrigemDestino(plinha l, const char* codOrigem, const char* codDestin
     return 0;
 }
 
+int verificaOrigem(plinha l, const char* codOrigem){
+    int or;
+    for(int i = 0; i < l->totalP; i++){
+        or = 1;
+        for(int j = 0; j < 5; j++)
+            if(codOrigem[j] != l->paragens[i * 5 + j])
+                or = 0;
+
+        if(or)
+            return 1;
+    }
+    return 0;
+}
+
 void getInfoPercurso(char** codOrigem, char** codDestino, pparagem p, int totalParagens){
     char origem[100], destino[100];
 
@@ -526,9 +547,58 @@ void calcularPercursos(plinha l, pparagem p, int totalParagens){
         return;
 
     while(aux != NULL){
-        if(verificaOrigemDestino(aux, *codOrigem, *codDestino) == 1)
-            calcularPercursoUmaLinha(aux, p, totalParagens, codOrigem, codDestino);
+        /*if(verificaOrigemDestino(aux, *codOrigem, *codDestino) == 1)
+            calcularPercursoUmaLinha(aux, p, totalParagens, codOrigem, codDestino);*/
+        if(verificaOrigem(aux, *codOrigem) == 1)
+            calculaPercursoDuasLinhas(aux, p, totalParagens, codOrigem, codDestino);
         aux = aux->prox;
+    }
+}
+
+void calculaPercursoDuasLinhas(plinha l, pparagem p, int totalParagens, char* codOrigem[5], char* codDestino[5]){
+    plinha aux;
+    int or, dest;
+    char* codTemp[5];
+    for(int i = 0; i < l->totalP; i++){
+        or = dest = 1;
+        for(int j = 0; j < 5; j++){
+            if((*codOrigem)[j] != l->paragens[i * 5 + j]){
+                or = 0;
+            }
+            if((*codDestino[j]) != l->paragens[i * 5 + j]){
+                dest = 0;
+            }
+        }
+
+        if(!dest && !or){
+            for(int j = 0; j < 5; j++)
+                *(codTemp + j) = &l->paragens[i * 5 + j];
+
+            //percorrer linhas prox
+            aux = l->prox;
+            while(aux != NULL){
+                if(verificaOrigemDestino(aux, *codTemp, *codDestino) == 1){
+                    calcularPercursoUmaLinha(l, p, totalParagens, codOrigem, codTemp);
+                    if(strcmp(*codTemp, *codDestino) != 0)
+                        calcularPercursoUmaLinha(aux, p, totalParagens, codTemp, codDestino);
+                }
+                putchar('\n');
+                aux = aux->prox;
+            }
+
+            //percorrer linhas ant
+            aux = l->ant;
+            while(aux != NULL){
+                if(verificaOrigemDestino(aux, *codTemp, *codDestino) == 1){
+                    if(strcmp(*codTemp, *codDestino) != 0){
+                        calcularPercursoUmaLinha(l, p, totalParagens, codOrigem, codTemp);
+                        calcularPercursoUmaLinha(aux, p, totalParagens, codTemp, codDestino);
+                    }
+                }
+                putchar('\n');
+                aux = aux->ant;
+            }
+        }
     }
 
 }

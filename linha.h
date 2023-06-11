@@ -52,8 +52,12 @@ void calcularPercursoUmaLinha(plinha l, pparagem p, int totalParagens, char *cod
 
 int verificaOrigemDestino(plinha l, const char* codOrigem, const char* codDestino);
 
+int verificaOrigem(plinha l, const char* codOrigem);
+
 void getInfoPercurso(char** codOrigem, char** codDestino, pparagem p, int totalParagens);
 
 void calcularPercursos(plinha l, pparagem p, int totalParagens);
+
+void calculaPercursoDuasLinhas(plinha l, pparagem p, int totalParagens, char* codOrigem[5], char* codDestino[5]);
 
 #endif //TP_LINHA_H

@@ -61,6 +61,7 @@ void visualizarParagens(pparagem p, int total){
 
 pparagem registarParagem(pparagem p, int* totalParagens, int* id){
     paragem* aux = realloc(p, sizeof(paragem)*((*totalParagens) + 1));
+    printf("%d", *totalParagens);
     if(aux == NULL){
         printf("ERRO na alocacao de memoria\n");
         return p;
@@ -114,7 +115,7 @@ pparagem eliminarParagem(pparagem p, int* totalParagens){
                     return NULL;
                 }
             }
-
+            return p;
         }
     }
     return p;
