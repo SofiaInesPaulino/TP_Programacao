@@ -17,7 +17,7 @@ typedef struct linha linha, *plinha;
 struct linha{
     char nome[100];
     int totalP; //quantas paragens que há nesta linha
-    char *paragens;
+    char *paragens; //array com os codigos de todas as paragens
     plinha prox;
     plinha ant;
 };

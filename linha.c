@@ -403,7 +403,7 @@ plinha recuperaLinhas(){
             fclose(f);
             return p;
         }
-        fread(aux, sizeof(char) * 5, lin.totalP, f); //TODO: verificar se todas as paragens existem
+        fread(aux, sizeof(char) * 5, lin.totalP, f);
         lin.paragens = aux;
         *novo = lin;
         novo->prox = NULL; //porque não vai ficar no mesmo lugar de memória que ficou da última vez
@@ -548,7 +548,7 @@ void calcularPercursos(plinha l, pparagem p, int totalParagens){
 
     while(aux != NULL){
         /*if(verificaOrigemDestino(aux, *codOrigem, *codDestino) == 1)
-            calcularPercursoUmaLinha(aux, p, totalParagens, codOrigem, codDestino);*/
+            calcularPercursoUmaLinha(aux, p, totalParagens, codOrigem, codDestino);*/ //TODO: remover?
         if(verificaOrigem(aux, *codOrigem) == 1)
             calculaPercursoDuasLinhas(aux, p, totalParagens, codOrigem, codDestino);
         aux = aux->prox;
@@ -582,7 +582,7 @@ void calculaPercursoDuasLinhas(plinha l, pparagem p, int totalParagens, char* co
                     if(strcmp(*codTemp, *codDestino) != 0)
                         calcularPercursoUmaLinha(aux, p, totalParagens, codTemp, codDestino);
                 }
-                putchar('\n');
+                printf("\n_____\n");
                 aux = aux->prox;
             }
 
@@ -595,7 +595,7 @@ void calculaPercursoDuasLinhas(plinha l, pparagem p, int totalParagens, char* co
                         calcularPercursoUmaLinha(aux, p, totalParagens, codTemp, codDestino);
                     }
                 }
-                putchar('\n');
+                printf("\n_____\n");
                 aux = aux->ant;
             }
         }
